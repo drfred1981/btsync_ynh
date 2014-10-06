@@ -1,0 +1,41 @@
+{
+    "name": "BitTorrentSync",
+    "id": "btsync",
+    "description": {
+        "en": "BitTorrentSync : synchronize your files using bittorrent",
+        "fr": "BitTorrent Sync : synchronisation de répertoire par torrent"
+    },
+    "developer": {
+        "name": "",
+        "email": "",
+        "url": "http://www.bittorrent.com/sync"
+    },
+    "multi_instance": "false",
+    "arguments": {
+        "install" : [
+            {
+                "name": "domain",
+                "ask": {
+                    "en": "Choose a domain for BitTorrentSync"
+                },
+                "example": "domain.org"
+            },
+            {
+                "name": "path",
+                "ask": {
+                    "en": "Choose a path for BitTorrentSync"
+                },
+                "example": "/btsync",
+                "default": "/btsync"
+            },
+            {
+                "name": "platform",
+                "ask": {
+                    "en": "Choose the BitTorrentSync platform"
+                },
+                 "choices": ["arm" , "linux_i386", "linux_x64"],
+		"default": "linux_i386"
+            }
+        ]
+    }
+}
