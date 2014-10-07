@@ -39,8 +39,6 @@ do
 		sudo sed -i "s@PORT@$port@g" /home/$i/.sync/config.json
 		sudo sh -c "echo '$i=$port' >> /var/www/btsync/port.number.ini"
 		sudo chown -R $i /home/$i/.sync
-		sudo yunohost app setting btsync protected_uris -v "http://localhost:$port/gui,http://localhost:$port/"
-
 	fi
 done
 sudo chown -R www-data:www-data /var/www/btsync/
