@@ -1,6 +1,11 @@
 #!/bin/bash
-sudo apt-get update
-sudo apt-get upgrade
+
+platform=$(sudo yunohost app setting btsync platform)
+
+sudo service btsync stop
+sudo cp ../sources/$platform/btsync /usr/bin/
+sudo service btsync start
+
 sudo service nginx reload
 sudo yunohost app ssowatconf
 

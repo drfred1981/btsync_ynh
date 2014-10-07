@@ -1,0 +1,20 @@
+#!/bin/bash
+sudo rm /var/www/btsync/port.number.ini
+port=9500
+for i in $(ls /home)
+do
+	sudo yunohost user list --json | grep -q "\"username\": \"$i\""
+	if [[ $? -eq 0 ]];
+	then
+		sudo mkdir /home/$i/.sync
+		sudo cp ./user.config.json /home/$i/.sync/config.json
+		sudo sed -i "s@DEVICENAME@$domain - $i@g" /home/$i/.sync/config.json
+		sudo sed -i "s@LOGINNAME@$i@g" /home/$i/.sync/config.json
+		port=$((port+1))
+		sudo sed -i "s@PORT@$port@g" /home/$i/.sync/config.json
+		sudo sh -c "echo '$i=$port' >> /var/www/btsync/port.number.ini"
+		sudo chown -R $i:$i /home/$i/.sync
+
+	fi
+done
+sudo chown -R www-data:www-data /var/www/btsync/

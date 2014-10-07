@@ -1,10 +1,10 @@
 #!/bin/bash
 
 domain=$(sudo yunohost app setting btsync domain)
-sudo apt-get remove --purge webmin
+
 sudo rm -f /etc/nginx/conf.d/$domain.d/btsync.conf
 
-
+sudo rm /etc/php5/conf.d/20-btsync.ini
 
 sudo rm -rf /var/www/btsync
 
@@ -16,5 +16,7 @@ do
 		sudo rm -r /home/$i/.sync
 	fi
 done
-
+sudo yunohost service remove btsync
+sudo update-rc.d btsync remove
 sudo service nginx reload
+sudo service php5-fpm reload

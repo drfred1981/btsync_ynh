@@ -14,12 +14,16 @@ if [[ ! $? -eq 0 ]]; then
     exit 1
 fi
 
+sudo yunohost app setting btsync platform -v $platform
 
 sudo cp ../sources/$platform/btsync /usr/bin/
 sudo mkdir /var/www/btsync/
-sudo chown -R www-data:www-data /var/www/btsync/
 sudo cp ../sources/index.php /var/www/btsync/
 
+sudo rm /var/www/btsync/port.number.ini
+
+
+port=9500
 for i in $(ls /home)
 do
 	sudo yunohost user list --json | grep -q "\"username\": \"$i\""
@@ -27,22 +31,32 @@ do
 	then
 		sudo mkdir /home/$i/.sync
 		sudo cp ../conf/user.config.json /home/$i/.sync/config.json
-		sed -i "s@DEVICENAME@$domain - $i@g" /home/$i/.sync/config.json
-		sed -i "s@LOGINNAME@$i@g" /home/$i/.sync/config.json
-			
+		sudo sed -i "s@DEVICENAME@$domain - $i@g" /home/$i/.sync/config.json
+		sudo sed -i "s@LOGINNAME@$i@g" /home/$i/.sync/config.json
+		port=$((port+1))
+		sudo sed -i "s@PORT@$port@g" /home/$i/.sync/config.json
+		sudo sh -c "echo '$i=$port' >> /var/www/btsync/port.number.ini"
+		sudo chown -R $i:$i /home/$i/.sync
+
 	fi
 done
+sudo chown -R www-data:www-data /var/www/btsync/
 
 sudo cp ../conf/init.btsync /etc/init.d/btsync
 sudo chmod +x /etc/init.d/btsync
+sudo cp../conf/20-btsync.ini /etc/php5/conf.d/
 
-
-final_path=/var/www/btsync
 sed -i "s@PATHTOCHANGE@$path@g" ../conf/nginx.conf
-sed -i "s@ALIASTOCHANGE@$final_path/@g" ../conf/nginx.conf
+sed -i "s@ALIASTOCHANGE@/var/www/btsync/@g" ../conf/nginx.conf
 sudo cp ../conf/nginx.conf /etc/nginx/conf.d/$domain.d/btsync.conf
+
+sudo update-rc.d btsync defaults
+
+sudo yunohost service add btsync
 
 
 # Reload Nginx and regenerate SSOwat conf
 sudo service nginx reload
+sudo service php5-fpm reload
+
 sudo yunohost app ssowatconf
