@@ -5,7 +5,7 @@ domain=$1
 path=$2
 platform=$3
 
-version=""
+version="1.4.83"
 
 # Remove trailing "/" for next commands
 path=${path%/}
@@ -18,10 +18,14 @@ fi
 
 sudo yunohost app setting btsync platform -v $platform
 
-sudo cp ../sources/$platform/btsync /usr/bin/
+wget http://syncapp.bittorrent.com/$version/btsync_$platform-$version.tar.gz -O /tmp/btsync.tar.gz
+tar -xvf /tmp/btsync.tar.gz -C /tmp
+
+sudo cp /tmp/btsync /usr/bin/
+sudo chmod +x /usr/bin/btsync
+
 sudo mkdir /var/www/btsync/
 sudo cp ../sources/index.php /var/www/btsync/
-
 sudo rm /var/www/btsync/port.number.ini
 
 
