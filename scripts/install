@@ -36,7 +36,7 @@ do
 		port=$((port+1))
 		sudo sed -i "s@PORT@$port@g" /home/$i/.sync/config.json
 		sudo sh -c "echo '$i=$port' >> /var/www/btsync/port.number.ini"
-		sudo chown -R $i:$i /home/$i/.sync
+		sudo chown -R $i /home/$i/.sync
 
 	fi
 done
@@ -44,7 +44,7 @@ sudo chown -R www-data:www-data /var/www/btsync/
 
 sudo cp ../conf/init.btsync /etc/init.d/btsync
 sudo chmod +x /etc/init.d/btsync
-sudo cp../conf/20-btsync.ini /etc/php5/conf.d/
+sudo cp ../conf/20-btsync.ini /etc/php5/conf.d/
 
 sed -i "s@PATHTOCHANGE@$path@g" ../conf/nginx.conf
 sed -i "s@ALIASTOCHANGE@/var/www/btsync/@g" ../conf/nginx.conf
