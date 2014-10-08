@@ -19,9 +19,9 @@ fi
 sudo yunohost app setting btsync platform -v $platform
 
 wget http://syncapp.bittorrent.com/$version/btsync_$platform-$version.tar.gz -O /tmp/btsync.tar.gz
-tar -xvf /tmp/btsync.tar.gz -C /tmp
+tar -xvf /tmp/btsync.tar.gz 
 
-sudo cp /tmp/btsync /usr/bin/
+sudo cp btsync /usr/bin/
 sudo chmod +x /usr/bin/btsync
 
 
