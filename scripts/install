@@ -5,7 +5,7 @@ domain=$1
 path=$2
 platform=$3
 
-version="1.4.83"
+version="1.3.105"
 
 # Remove trailing "/" for next commands
 path=${path%/}
@@ -24,10 +24,6 @@ tar -xvf /tmp/btsync.tar.gz -C /tmp
 sudo cp /tmp/btsync /usr/bin/
 sudo chmod +x /usr/bin/btsync
 
-sudo mkdir /var/www/btsync/
-sudo cp ../sources/index.php /var/www/btsync/
-sudo rm /var/www/btsync/port.number.ini
-
 
 port=9500
 for i in $(ls /home)
@@ -41,7 +37,6 @@ do
 		sudo sed -i "s@LOGINNAME@$i@g" /home/$i/.sync/config.json
 		port=$((port+1))
 		sudo sed -i "s@PORT@$port@g" /home/$i/.sync/config.json
-		sudo sh -c "echo '$i=$port' >> /var/www/btsync/port.number.ini"
 		sudo chown -R $i /home/$i/.sync
 	fi
 done
@@ -49,7 +44,7 @@ sudo chown -R www-data:www-data /var/www/btsync/
 
 sudo cp ../conf/init.btsync /etc/init.d/btsync
 sudo chmod +x /etc/init.d/btsync
-sudo cp ../conf/20-btsync.ini /etc/php5/conf.d/
+
 
 sed -i "s@PATHTOCHANGE@$path@g" ../conf/nginx.conf
 sed -i "s@ALIASTOCHANGE@/var/www/btsync/@g" ../conf/nginx.conf
@@ -62,6 +57,4 @@ sudo yunohost service add btsync
 
 # Reload Nginx and regenerate SSOwat conf
 sudo service nginx reload
-sudo service php5-fpm reload
-
 sudo yunohost app ssowatconf
