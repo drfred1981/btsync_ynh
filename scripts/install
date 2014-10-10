@@ -49,7 +49,7 @@ do
 		port=$((port+1))
 		sudo sed -i "s@PORT@$port@g" /home/$i/.btsync/config.json
 		sudo chown -R $i /home/$i/.btsync
-		sudo sh -c "echo $NGINX > /etc/nginx/conf.d/$domain.d/btsync$i.conf"
+		sudo sh -c "echo '$NGINX' > /etc/nginx/conf.d/$domain.d/btsync$i.conf"
 		
 		sudo sed -i "s@USERNAME@$i@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf
 		sudo sed -i "s@PORT@$port@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf	
