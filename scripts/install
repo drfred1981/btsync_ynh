@@ -25,7 +25,17 @@ sudo tar -xvf /tmp/btsync.tar.gz -C /tmp/
 sudo cp /tmp/btsync /usr/bin/
 sudo chmod +x /usr/bin/btsync
 
-
+NGINX='location /btsyncUSERNAME/ {\n
+        rewrite ^/btsyncUSERNAME/gui(.*) /btsyncUSERNAME$1 last;\n
+        proxy_pass	http://127.0.0.1:PORT/gui/;\n
+        proxy_redirect 	/gui/ /btsyncUSERNAME/;\n
+        proxy_buffering	off;\n
+        proxy_set_header	Host           $host;\n
+        proxy_set_header	X-Real-IP      $remote_addr;\n
+        subs_filter	/gui /btsyncUSERNAME;\n
+        include	conf.d/yunohost_panel.conf.inc;\n
+    	more_clear_input_headers	"Accept-Encoding";\n
+}'
 port=9500
 for i in $(ls /home)
 do
@@ -39,7 +49,8 @@ do
 		port=$((port+1))
 		sudo sed -i "s@PORT@$port@g" /home/$i/.btsync/config.json
 		sudo chown -R $i /home/$i/.btsync
-		sudo cp ../conf/nginxUSER.conf /etc/nginx/conf.d/$domain.d/btsync$i.conf
+		sudo sh -c "echo $NGINX > /etc/nginx/conf.d/$domain.d/btsync$i.conf"
+		
 		sudo sed -i "s@USERNAME@$i@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf
 		sudo sed -i "s@PORT@$port@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf	
 	fi
