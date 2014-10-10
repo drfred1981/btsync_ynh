@@ -25,16 +25,16 @@ sudo tar -xvf /tmp/btsync.tar.gz -C /tmp/
 sudo cp /tmp/btsync /usr/bin/
 sudo chmod +x /usr/bin/btsync
 
-NGINX='location /btsyncUSERNAME/ {\n
-        rewrite ^/btsyncUSERNAME/gui(.*) /btsyncUSERNAME$1 last;\n
-        proxy_pass	http://127.0.0.1:PORT/gui/;\n
-        proxy_redirect 	/gui/ /btsyncUSERNAME/;\n
-        proxy_buffering	off;\n
-        proxy_set_header	Host           $host;\n
-        proxy_set_header	X-Real-IP      $remote_addr;\n
-        subs_filter	/gui /btsyncUSERNAME;\n
-        include	conf.d/yunohost_panel.conf.inc;\n
-    	more_clear_input_headers	"Accept-Encoding";\n
+NGINX='location /btsyncUSERNAME/ {
+        rewrite ^/btsyncUSERNAME/gui(.*) /btsyncUSERNAME$1 last;
+        proxy_pass	http://127.0.0.1:PORT/gui/;
+        proxy_redirect 	/gui/ /btsyncUSERNAME/;
+        proxy_buffering	off;
+        proxy_set_header	Host           $host;
+        proxy_set_header	X-Real-IP      $remote_addr;
+        subs_filter	/gui /btsyncUSERNAME;
+        include	conf.d/yunohost_panel.conf.inc;
+    	more_clear_input_headers	"Accept-Encoding";
 }'
 port=9500
 for i in $(ls /home)

@@ -1,7 +1,7 @@
 {
 "device_name": "DEVICENAME",
 "listening_port": 0,
-"storage_path": "/home/LOGINNAME/.sync",
+"storage_path": "/home/LOGINNAME/.btsync",
 "check_for_updates": true,
 "use_upnp": true,
 "download_limit": 0,
