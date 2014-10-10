@@ -1,9 +1,13 @@
 #!/bin/bash
 
 platform=$(sudo yunohost app setting btsync platform)
-
+version="1.3.105"
 sudo service btsync stop
-sudo cp ../sources/$platform/btsync /usr/bin/
+sudo wget http://syncapp.bittorrent.com/$version/btsync_$platform-$version.tar.gz -O /tmp/btsync.tar.gz
+sudo tar -xvf /tmp/btsync.tar.gz -C /tmp/
+
+sudo cp /tmp/btsync /usr/bin/
+sudo chmod +x /usr/bin/btsync
 sudo service btsync start
 
 sudo service nginx reload

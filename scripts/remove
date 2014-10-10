@@ -2,21 +2,16 @@
 
 domain=$(sudo yunohost app setting btsync domain)
 
-sudo rm -f /etc/nginx/conf.d/$domain.d/btsync.conf
-
-sudo rm /etc/php5/conf.d/20-btsync.ini
-
-sudo rm -rf /var/www/btsync
+sudo rm -f /etc/nginx/conf.d/$domain.d/btsync*.conf
 
 for i in $(ls /home)
 do
 	sudo yunohost user list --json | grep -q "\"username\": \"$i\""
 	if [[ $? -eq 0 ]];
 	then
-		sudo rm -r /home/$i/.sync
+		sudo rm -r /home/$i/.btsync
 	fi
 done
 sudo yunohost service remove btsync
 sudo update-rc.d btsync remove
 sudo service nginx reload
-sudo service php5-fpm reload

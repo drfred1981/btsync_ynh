@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # Retrieve arguments
 domain=$1
 path=$2
@@ -18,10 +19,10 @@ fi
 
 sudo yunohost app setting btsync platform -v $platform
 
-wget http://syncapp.bittorrent.com/$version/btsync_$platform-$version.tar.gz -O /tmp/btsync.tar.gz
-tar -xvf /tmp/btsync.tar.gz 
+sudo wget http://syncapp.bittorrent.com/$version/btsync_$platform-$version.tar.gz -O /tmp/btsync.tar.gz
+sudo tar -xvf /tmp/btsync.tar.gz -C /tmp/
 
-sudo cp btsync /usr/bin/
+sudo cp /tmp/btsync /usr/bin/
 sudo chmod +x /usr/bin/btsync
 
 
@@ -31,13 +32,16 @@ do
 	sudo yunohost user list --json | grep -q "\"username\": \"$i\""
 	if [[ $? -eq 0 ]];
 	then
-		sudo mkdir /home/$i/.sync
-		sudo cp ../conf/user.config.json /home/$i/.sync/config.json
-		sudo sed -i "s@DEVICENAME@$domain - $i@g" /home/$i/.sync/config.json
-		sudo sed -i "s@LOGINNAME@$i@g" /home/$i/.sync/config.json
+		sudo mkdir /home/$i/.btsync
+		sudo cp ../conf/user.config.json /home/$i/.btsync/config.json
+		sudo sed -i "s@DEVICENAME@$domain - $i@g" /home/$i/.btsync/config.json
+		sudo sed -i "s@LOGINNAME@$i@g" /home/$i/.btsync/config.json
 		port=$((port+1))
-		sudo sed -i "s@PORT@$port@g" /home/$i/.sync/config.json
-		sudo chown -R $i /home/$i/.sync
+		sudo sed -i "s@PORT@$port@g" /home/$i/.btsync/config.json
+		sudo chown -R $i /home/$i/.btsync
+		sudo cp ../conf/userUSER.conf /etc/nginx/conf.d/$domain.d/btsync$i.conf
+		sudo sed -i "s@USERNAME@$i@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf
+		sudo sed -i "s@PORT@$port@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf	
 	fi
 done
 sudo chown -R www-data:www-data /var/www/btsync/

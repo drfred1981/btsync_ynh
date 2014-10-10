@@ -1,13 +1,13 @@
 #!/bin/sh
 # btsync service
 # Replace with linux users you want to run BTSync clients for
-BTSYNC_USERS=$(stat -c "%U" /home/*/.sync/config.json)
+BTSYNC_USERS=$(stat -c "%U" /home/*/.btsync/config.json)
 DAEMON=/usr/bin/btsync
  
 start() {
 for btsuser in $BTSYNC_USERS; do
 HOMEDIR=`getent passwd $btsuser | cut -d: -f6`
-config=$HOMEDIR/.sync/config.json
+config=$HOMEDIR/.btsync/config.json
 if [ -f $config ]; then
 echo "Starting BTSync for $btsuser"
 start-stop-daemon -b -o -c $btsuser -S -u $btsuser -x $DAEMON -- --config $config

@@ -1,20 +1,55 @@
 #!/bin/bash
-sudo rm /var/www/btsync/port.number.ini
+
+
+YNH_MAIL=$(sudo yunohost user info $user | grep "mail: " | sed s/'mail: '/''/g)
+domain=$(echo $YNH_MAIL | sed s/$user'@'/''/g)
+
+CONFIG='{\n
+"device_name": "DEVICENAME",\n
+"listening_port": 0,\n
+"storage_path": "/home/LOGINNAME/.btsync",\n
+"check_for_updates": true,\n
+"use_upnp": true,\n
+"download_limit": 0,\n
+"upload_limit": 0,\n
+"webui": {\n
+ "listen": "0.0.0.0:PORT"\n
+},\n
+"shared_folders": []\n
+}'
+
+NGINX="location /btsyncUSERNAME/ {\n
+        rewrite ^/btsyncUSERNAME/gui(.*) /btsyncUSERNAME$1 last;\n
+        proxy_pass	http://127.0.0.1:PORT/gui/;\n
+        proxy_redirect 	/gui/ /btsyncUSERNAME/;\n
+        proxy_buffering	off;\n
+        proxy_set_header	Host           $host;\n
+        proxy_set_header	X-Real-IP      $remote_addr;\n
+        subs_filter	/gui /btsyncUSERNAME;\n
+        include	conf.d/yunohost_panel.conf.inc;\n
+    	more_clear_input_headers	'Accept-Encoding';\n
+}"
+sudo rm /etc/nginx/conf.d/$domain.d/btsync*.conf
 port=9500
 for i in $(ls /home)
 do
 	sudo yunohost user list --json | grep -q "\"username\": \"$i\""
 	if [[ $? -eq 0 ]];
 	then
+		port=$((port+1))
 		sudo mkdir /home/$i/.sync
-		sudo cp ./user.config.json /home/$i/.sync/config.json
+		sudo sh -c "echo $CONFIG > /home/$i/.btsync/config.json"
 		sudo sed -i "s@DEVICENAME@$domain - $i@g" /home/$i/.sync/config.json
 		sudo sed -i "s@LOGINNAME@$i@g" /home/$i/.sync/config.json
-		port=$((port+1))
 		sudo sed -i "s@PORT@$port@g" /home/$i/.sync/config.json
-		sudo sh -c "echo '$i=$port' >> /var/www/btsync/port.number.ini"
 		sudo chown -R $i:$i /home/$i/.sync
 
+		sudo sh -c "echo $NGINX >/etc/nginx/conf.d/$domain.d/btsync$i.conf"
+		sudo sed -i "s@USERNAME@$i@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf
+		sudo sed -i "s@PORT@$port@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf	
+		
 	fi
 done
-sudo chown -R www-data:www-data /var/www/btsync/
+
+sudo service btsync start
+sudo service nginx reload
