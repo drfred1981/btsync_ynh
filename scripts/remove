@@ -1,9 +1,6 @@
 #!/bin/bash
-
 domain=$(sudo yunohost app setting btsync domain)
-
-sudo rm -f /etc/nginx/conf.d/$domain.d/btsync*.conf
-
+sudo rm -f "/etc/nginx/conf.d/$domain.d/btsync*.conf"
 for i in $(ls /home)
 do
 	sudo yunohost user list --json | grep -q "\"username\": \"$i\""
