@@ -39,12 +39,12 @@ do
 		port=$((port+1))
 		sudo sed -i "s@PORT@$port@g" /home/$i/.btsync/config.json
 		sudo chown -R $i /home/$i/.btsync
-		sudo cp ../conf/userUSER.conf /etc/nginx/conf.d/$domain.d/btsync$i.conf
+		sudo cp ../conf/nginxUSER.conf /etc/nginx/conf.d/$domain.d/btsync$i.conf
 		sudo sed -i "s@USERNAME@$i@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf
 		sudo sed -i "s@PORT@$port@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf	
 	fi
 done
-sudo chown -R www-data:www-data /var/www/btsync/
+
 
 sudo cp ../conf/init.btsync /etc/init.d/btsync
 sudo chmod +x /etc/init.d/btsync
@@ -58,7 +58,7 @@ sudo update-rc.d btsync defaults
 
 sudo yunohost service add btsync
 
-
+sudo service btsync start
 # Reload Nginx and regenerate SSOwat conf
 sudo service nginx reload
 sudo yunohost app ssowatconf
