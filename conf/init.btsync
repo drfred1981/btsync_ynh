@@ -1,4 +1,13 @@
 #!/bin/sh
+### BEGIN INIT INFO
+# Provides: btsync
+# Required-Start: $remote_fs $syslog
+# Required-Stop:
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: btsync daemon
+# Description: btsync daemon, web ui on port 8888
+### END INIT INFO
 # btsync service
 # Replace with linux users you want to run BTSync clients for
 BTSYNC_USERS=$(stat -c "%U" /home/*/.btsync/config.json)
