@@ -48,9 +48,9 @@ do
 		sudo sed -i "s@LOGINNAME@$i@g" /home/yunohost.app/btsync/$i/config.json
 		port=$((port+1))
 		sudo sed -i "s@PORT@$port@g" /home/yunohost.app/btsync/$i/config.json
-		sudo chown -R $i /home/$i/.btsync
-		sudo sh -c "echo '$NGINX' > /etc/nginx/conf.d/$domain.d/btsync$i.conf"
+		sudo chown -R $i /home/yunohost.app/btsync/$i/
 		
+		sudo sh -c "echo '$NGINX' > /etc/nginx/conf.d/$domain.d/btsync$i.conf"
 		sudo sed -i "s@USERNAME@$i@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf
 		sudo sed -i "s@PORT@$port@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf	
 	fi
