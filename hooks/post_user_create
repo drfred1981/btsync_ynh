@@ -7,7 +7,7 @@ domain=$(echo $YNH_MAIL | sed s/$user'@'/''/g)
 CONFIG='{
 "device_name": "DEVICENAME",
 "listening_port": 0,
-"storage_path": "/home/LOGINNAME/.btsync",
+"storage_path": ""/home/yunohost.app/btsync/LOGINNAME/"",
 "check_for_updates": true,
 "use_upnp": true,
 "download_limit": 0,
@@ -37,12 +37,12 @@ do
 	if [[ $? -eq 0 ]];
 	then
 		port=$((port+1))
-		sudo mkdir /home/$i/.sync
-		sudo sh -c "echo '$CONFIG' > /home/$i/.btsync/config.json"
-		sudo sed -i "s@DEVICENAME@$domain - $i@g" /home/$i/.sync/config.json
-		sudo sed -i "s@LOGINNAME@$i@g" /home/$i/.sync/config.json
-		sudo sed -i "s@PORT@$port@g" /home/$i/.sync/config.json
-		sudo chown -R $i:$i /home/$i/.sync
+		sudo mkdir -p "/home/yunohost.app/btsync/$i/"
+		sudo sh -c "echo '$CONFIG' > /home/yunohost.app/btsync/$i/config.json"
+		sudo sed -i "s@DEVICENAME@$domain - $i@g" /home/yunohost.app/btsync/$i/config.json
+		sudo sed -i "s@LOGINNAME@$i@g" /home/yunohost.app/btsync/$i/config.json
+		sudo sed -i "s@PORT@$port@g" /home/yunohost.app/btsync/$i/config.json
+		sudo chown -R $i /home/yunohost.app/btsync/$i/
 
 		sudo sh -c "echo '$NGINX' > /etc/nginx/conf.d/$domain.d/btsync$i.conf"
 		sudo sed -i "s@USERNAME@$i@g" /etc/nginx/conf.d/$domain.d/btsync$i.conf
