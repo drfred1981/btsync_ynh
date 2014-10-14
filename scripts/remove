@@ -1,14 +1,7 @@
 #!/bin/bash
 domain=$(sudo yunohost app setting btsync domain)
 sudo rm -f "/etc/nginx/conf.d/$domain.d/btsync*.conf"
-for i in $(ls /home)
-do
-	sudo yunohost user list --json | grep -q "\"username\": \"$i\""
-	if [[ $? -eq 0 ]];
-	then
-		sudo rm -r /home/$i/.btsync
-	fi
-done
+sudo rm -r /home/yunohost.app/btsync/
 sudo yunohost service remove btsync
 sudo update-rc.d btsync remove
 sudo service nginx reload
