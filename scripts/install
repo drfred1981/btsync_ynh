@@ -42,12 +42,12 @@ do
 	sudo yunohost user list --json | grep -q "\"username\": \"$i\""
 	if [[ $? -eq 0 ]];
 	then
-		sudo mkdir /home/$i/.btsync
-		sudo cp ../conf/user.config.json /home/$i/.btsync/config.json
-		sudo sed -i "s@DEVICENAME@$domain - $i@g" /home/$i/.btsync/config.json
-		sudo sed -i "s@LOGINNAME@$i@g" /home/$i/.btsync/config.json
+		sudo mkdir -p /home/yunohost.app/btsync/$i/
+		sudo cp ../conf/user.config.json /home/yunohost.app/btsync/$i/config.json
+		sudo sed -i "s@DEVICENAME@$domain - $i@g" /home/yunohost.app/btsync/$i/config.json
+		sudo sed -i "s@LOGINNAME@$i@g" /home/yunohost.app/btsync/$i/config.json
 		port=$((port+1))
-		sudo sed -i "s@PORT@$port@g" /home/$i/.btsync/config.json
+		sudo sed -i "s@PORT@$port@g" /home/yunohost.app/btsync/$i/config.json
 		sudo chown -R $i /home/$i/.btsync
 		sudo sh -c "echo '$NGINX' > /etc/nginx/conf.d/$domain.d/btsync$i.conf"
 		
